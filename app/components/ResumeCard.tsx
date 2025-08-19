@@ -24,6 +24,7 @@ const ResumeCard = ({ resume }: { resume: Resume }) => {
       <div className="gradient-border animate-in fade-in duration-1000">
         <div className="w-full w-full">
             <img src={resume.imagePath} alt="resume"className="w-full h-[350px] max-sm:h-[200px] object-cover object-top" />
+            <h2>{resume.imagePath}</h2>
 
 
         </div>
