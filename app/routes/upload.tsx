@@ -5,6 +5,10 @@ import Navbar from "~/components/Navbar";
 const upload = () => {
   const [isProcessing, setisProcessing] = useState(false);
   const [statusText, setStatusText] = useState("");
+  const [file, setFile] = useState<File |null>(null)
+  const handleFileSelect=(file:File|null)=>{
+    setFile(file)
+  }
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {};
 
   return (
@@ -59,10 +63,12 @@ const upload = () => {
               <div className="form-div">
                 <label htmlFor="uploader">Upload Resume</label>
                 <div className="w-full">
-                    <FileUploader/>
+                  <FileUploader onFileSelect={handleFileSelect}/>
                 </div>
               </div>
-              <button className="primary-button" type="submit">Analyze Resume</button>
+              <button className="primary-button" type="submit">
+                Analyze Resume
+              </button>
             </form>
           )}
         </div>
