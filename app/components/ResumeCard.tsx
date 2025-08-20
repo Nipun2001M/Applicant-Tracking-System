@@ -28,7 +28,6 @@ const ResumeCard = ({ resume }: { resume: Resume }) => {
             alt="resume"
             className="w-full h-[350px] max-sm:h-[200px] object-cover object-top"
           />
-          <h2>{resume.imagePath}</h2>
         </div>
       </div>
     </Link>

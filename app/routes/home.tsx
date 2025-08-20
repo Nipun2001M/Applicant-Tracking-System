@@ -2,6 +2,9 @@ import Navbar from "~/components/Navbar";
 import type { Route } from "./+types/home";
 import { resumes } from "~/constants";
 import ResumeCard from "~/components/ResumeCard";
+import { usePuterStore } from "~/lib/puter";
+import { useNavigate } from "react-router";
+import { useEffect } from "react";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -11,25 +14,32 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
-  return <main className="bg-[url('/images/bg-main.svg')] bg-cover">
-    <Navbar/>
-    <section className="main-section">
-      <div className="page-heading">
-        <h1>Track Your Applications and Reasume Ratings</h1>
-<h2>Review Your Submissions and Check AI Powered Feedback</h2>
-      </div>
+    const {  auth } = usePuterStore();
+    const navigate = useNavigate();
 
-    </section>
-
-    {resumes.length >0 && (
-      <div>
-        {resumes.map((resume)=>(
-      <div>
-        <ResumeCard key={resume.id} resume={resume}/>
-      </div>
-    ))}
-
-      </div>
-    )}
-  </main>
+    useEffect(() => {
+      if(!auth.isAuthenticated) navigate('/auth?next=/')
+     
+    }, [auth.isAuthenticated]);
+  return (
+    <main className="bg-[url('/images/bg-main.svg')] bg-cover">
+      <Navbar />
+      <section className="main-section">
+        <div className="page-heading py-16">
+          <h1>Track Your Applications and Reasume Ratings</h1>
+          <h2>Review Your Submissions and Check AI Powered Feedback</h2>
+        </div>
+        {resumes.length > 0 && (
+          <div className="resumes-section">
+            {resumes.map((resume) => (
+              <div>
+                <ResumeCard key={resume.id} resume={resume} />
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+    </main>
+  );
 }
+ 
