@@ -1,13 +1,12 @@
-import React, { useState } from "react";
-import { useCallback } from "react";
+import { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
-import { formatSize } from "~/lib/utils";
+import { formatSize } from "../lib/utils";
 
-interface FileUploaderProp {
+interface FileUploaderProps {
   onFileSelect?: (file: File | null) => void;
 }
 
-const FileUploader = ({ onFileSelect }: FileUploaderProp) => {
+const FileUploader = ({ onFileSelect }: FileUploaderProps) => {
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
       const file = acceptedFiles[0] || null;
@@ -15,62 +14,58 @@ const FileUploader = ({ onFileSelect }: FileUploaderProp) => {
     },
     [onFileSelect]
   );
-  const { getRootProps, getInputProps, isDragActive, acceptedFiles } =
-    useDropzone({
-      onDrop,
-      multiple: false,
-      accept: { "application/pdf": [".pdf"] },
-      maxSize: 20 * 1024 * 1024,
-    });
+
+  const maxFileSize = 20 * 1024 * 1024;
+
+  const { getRootProps, getInputProps, acceptedFiles } = useDropzone({
+    onDrop,
+    multiple: false,
+    accept: { "application/pdf": [".pdf"] },
+    maxSize: maxFileSize,
+  });
+
   const file = acceptedFiles[0] || null;
-  const maxFileSize = 20 * 1024 * 1024; // 20MB in bytes
 
   return (
-    <div className="gradient-border w-full">
-      {" "}
-      <div {...getRootProps()}>
-        <input {...getInputProps()} />
-        <div className="space-y-4 cursor-pointer">
-          {file ? (
-            <div
-              className="uploader-selected-file"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <img src="/images/pdf.png" alt="pdf" className="size-10"></img>
+    <div {...getRootProps()} className="w-full gradient-border cursor-pointer">
+      <input {...getInputProps()} />
 
-              <div className="flex items-center space-x-10">
-                <div>
-                  <p className="text-sm font-medium text-gray-700 truncate max-w-xs">
-                    {file.name}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    {formatSize(file.size)}
-                  </p>
-                </div>
-              </div>
-              <button
-                className="p-2 cursor-pointer "
-                onClick={() => onFileSelect?.(null)}
-              >
-                <img src="/icons/cross.svg" alt="remove" className="w-4 h-4" />
-              </button>
-            </div>
-          ) : (
+      {file ? (
+        <div className="uploader-selected-file flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <img src="/images/pdf.png" alt="pdf" className="size-10" />
             <div>
-              <div className="mx-auto w-16 h-16 fkx items-center justify-center">
-                <img src="/icons/info.svg" alt="upload" className="size-20" />
-              </div>
-              <p className="text-lg text-gray-500 ">
-                <span className="font-semibold">Click To Upload</span> or drag &
-                drop
+              <p className="text-sm font-medium text-gray-700 truncate max-w-xs">
+                {file.name}
               </p>
-              <p className="text-lg text-gray-500">
-                PDF {formatSize(maxFileSize)}
-              </p>
+              <p className="text-sm text-gray-500">{formatSize(file.size)}</p>
             </div>
-          )}
+          </div>
+
+          <button
+            type="button"
+            className="p-2"
+            onClick={(e) => {
+              e.stopPropagation(); // only stop remove button
+              onFileSelect?.(null);
+            }}
+          >
+            <img src="/icons/cross.svg" alt="remove" className="w-4 h-4" />
+          </button>
         </div>
-      </div>
+      ) : (
+        <div className="text-center py-8">
+          <div className="mx-auto w-16 h-16 flex items-center justify-center mb-2">
+            <img src="/icons/info.svg" alt="upload" className="size-20" />
+          </div>
+          <p className="text-lg text-gray-500">
+            <span className="font-semibold">Click to upload</span> or drag & drop
+          </p>
+          <p className="text-lg text-gray-500">
+            PDF (max {formatSize(maxFileSize)})
+          </p>
+        </div>
+      )}
     </div>
   );
 };
