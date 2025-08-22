@@ -6,15 +6,13 @@ const Category = ({ title, score }: { title: string; score: number }) => {
   const textColor=score>70?'text-greeen-600':score>49?'text-yello-600':'text-red-600'
   return (
     <div className="resume-summery flex flex-row  items-center justify-between w-full p-5">
-     <div className="flex flex-row gap-2 items-center justify-center" >
-      <p className="text-2xl">{title}</p>
-      <ScoreBadge score={score}/>
-
-     </div>
-     <p className="text-2xl">
-      <span className={textColor}>{score}/100</span>
-
-     </p>
+      <div className="flex flex-row gap-2 items-center justify-center">
+        <p className="text-2xl">{title}</p>
+        <ScoreBadge score={score} />
+      </div>
+      <p className="text-2xl">
+        <span className={textColor}>{score}</span>/100
+      </p>
     </div>
   );
 };
