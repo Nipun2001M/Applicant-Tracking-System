@@ -4,7 +4,7 @@ import { resumes } from "~/constants";
 import ResumeCard from "~/components/ResumeCard";
 import { usePuterStore } from "~/lib/puter";
 import { useNavigate } from "react-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -14,13 +14,31 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
-    const {  auth } = usePuterStore();
+    const {  auth ,fs} = usePuterStore();
     const navigate = useNavigate();
+    const [resume, setResume] = useState('')
 
     useEffect(() => {
       if(!auth.isAuthenticated) navigate('/auth?next=/')
      
     }, [auth.isAuthenticated]);
+
+    useEffect(()=>{
+
+      const loadResume=async()=>{
+        const blob=await fs.read(resume.imagePath)
+        if (!blob) return
+
+        let url=URL.createObjectURL(blob)
+        setResume(url)
+
+
+
+
+      }
+      loadResume(resume.imagePath)
+
+    },[]) 
   return (
     <main className="bg-[url('/images/bg-main.svg')] bg-cover">
       <Navbar />
