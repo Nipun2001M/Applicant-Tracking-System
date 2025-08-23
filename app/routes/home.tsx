@@ -16,29 +16,13 @@ export function meta({}: Route.MetaArgs) {
 export default function Home() {
     const {  auth ,fs} = usePuterStore();
     const navigate = useNavigate();
-    const [resume, setResume] = useState('')
 
     useEffect(() => {
       if(!auth.isAuthenticated) navigate('/auth?next=/')
      
     }, [auth.isAuthenticated]);
 
-    useEffect(()=>{
 
-      const loadResume=async()=>{
-        const blob=await fs.read(resume.imagePath)
-        if (!blob) return
-
-        let url=URL.createObjectURL(blob)
-        setResume(url)
-
-
-
-
-      }
-      loadResume(resume.imagePath)
-
-    },[]) 
   return (
     <main className="bg-[url('/images/bg-main.svg')] bg-cover">
       <Navbar />
