@@ -56,7 +56,11 @@ export default function Home() {
       <section className="main-section">
         <div className="page-heading py-16">
           <h1>Track Your Applications and Reasume Ratings</h1>
-          <h2>Review Your Submissions and Check AI Powered Feedback</h2>
+          {!loadingResumes && resumes.length == 0 ? (
+            <h2>Mo resumes Found. Upload Resume to et the feed back </h2>
+          ) : (
+            <h2>Review Your Submissions and Check AI Powered Feedback</h2>
+          )}
         </div>
         {!loadingResumes && resumes.length > 0 && (
           <div className="resumes-section">
