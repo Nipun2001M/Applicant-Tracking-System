@@ -28,17 +28,21 @@ const upload = () => {
     jobDescription: string;
     file: File;
   }) => {
+
     setisProcessing(true);
     setStatusText("Uploading the File ...");
     const uploadedFile = await fs.upload([file]);
     if (!uploadedFile)
       return setStatusText("ERROR : Failed To Upload The File");
+
     setStatusText("Converting to Image ...");
     const imageFile = await convertPdfToImage(file);
     if (!imageFile.file) return setStatusText("Failed To convert PDF to image");
+    
     setStatusText("Uploading the image");
     const uploadedImage = await fs.upload([imageFile.file]);
     if (!uploadedImage) return setStatusText("Failed to upload");
+    
     setStatusText("preparing data ...");
     const uuid = generateUUID();
     const data = {
@@ -71,7 +75,7 @@ const upload = () => {
     setStatusText("Analysis complete, Redirecting");
     console.log(data);
 
-    navigate(`/resume/${uuid}`)
+    navigate(`/resume/${uuid}`);
   };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
