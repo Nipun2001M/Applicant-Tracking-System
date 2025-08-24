@@ -1,10 +1,10 @@
 import Navbar from "~/components/Navbar";
 import type { Route } from "./+types/home";
-import { resumes } from "~/constants";
 import ResumeCard from "~/components/ResumeCard";
 import { usePuterStore } from "~/lib/puter";
 import { useNavigate } from "react-router";
 import { useEffect, useState } from "react";
+
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -14,13 +14,40 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
-    const {  auth ,fs} = usePuterStore();
+    const {  auth ,fs,kv} = usePuterStore();
     const navigate = useNavigate();
+    const [resumes,setResumes]=useState<Resume[]>([])
+    const [loadingResumes, setloadingResumes] = useState(false)
 
     useEffect(() => {
+      console.log("is authenticated", auth.isAuthenticated);
       if(!auth.isAuthenticated) navigate('/auth?next=/')
+      
      
     }, [auth.isAuthenticated]);
+
+
+    useEffect(()=>{
+      console.log('inside useeffect')
+      const loadResumes=async()=>{
+        setloadingResumes(false)
+        const resumes=(await kv.list('resume:*',true))as KVItem[]
+
+        const parsedResumes=resumes.map((resume)=>(
+          JSON.parse(resume.value) as Resume
+        ))
+
+        setResumes(parsedResumes || [])
+        setloadingResumes(false)
+        console.log('Parsed Resume : ',parsedResumes)
+
+
+
+      }
+
+      loadResumes()
+
+    },[])
 
 
   return (
@@ -31,7 +58,7 @@ export default function Home() {
           <h1>Track Your Applications and Reasume Ratings</h1>
           <h2>Review Your Submissions and Check AI Powered Feedback</h2>
         </div>
-        {resumes.length > 0 && (
+        {!loadingResumes && resumes.length > 0 && (
           <div className="resumes-section">
             {resumes.map((resume) => (
               <div>
