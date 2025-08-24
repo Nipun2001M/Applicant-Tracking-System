@@ -17,7 +17,7 @@ export default function Home() {
     const {  auth ,fs,kv} = usePuterStore();
     const navigate = useNavigate();
     const [resumes,setResumes]=useState<Resume[]>([])
-    const [loadingResumes, setloadingResumes] = useState(false)
+    const [loadingResumes, setloadingResumes] = useState(true)
 
     useEffect(() => {
       console.log("is authenticated", auth.isAuthenticated);
@@ -30,7 +30,7 @@ export default function Home() {
     useEffect(()=>{
       console.log('inside useeffect')
       const loadResumes=async()=>{
-        setloadingResumes(false)
+        setloadingResumes(true)
         const resumes=(await kv.list('resume:*',true))as KVItem[]
 
         const parsedResumes=resumes.map((resume)=>(
@@ -57,11 +57,14 @@ export default function Home() {
         <div className="page-heading py-16">
           <h1>Track Your Applications and Reasume Ratings</h1>
           {!loadingResumes && resumes.length == 0 ? (
-            <h2>Mo resumes Found. Upload Resume to et the feed back </h2>
+            <h2>No resumes Found. Upload Resume to et the feed back </h2>
           ) : (
             <h2>Review Your Submissions and Check AI Powered Feedback</h2>
           )}
         </div>
+        {loadingResumes && (<div>
+          <img src="/images/resume-scan-2.gif" className="w-[200px] justify-center"/>
+        </div>)}
         {!loadingResumes && resumes.length > 0 && (
           <div className="resumes-section">
             {resumes.map((resume) => (
