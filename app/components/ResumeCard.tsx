@@ -12,15 +12,16 @@ const ResumeCard = ({ resume }: { resume: Resume }) => {
     const loadResume = async () => {
       const blob = await fs.read(resume.imagePath);
       if (!blob) return;
-
       let url = URL.createObjectURL(blob);
+      console.log("image--", url);
+
       setResumeUrl(url);
     };
     loadResume();
   }, [resume.imagePath]);
   return (
     <Link
-      to={`/resume.${resume.id}`}
+      to={`/resume/${resume.id}`}
       className="resume-card animate-in fade-in duration-1000"
     >
       <div className="resume-card-header">
